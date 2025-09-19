@@ -1,0 +1,266 @@
+basePath: /api
+definitions:
+  models.Device:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      position:
+        type: string
+      status:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server for gin swagger example.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Gin Swagger Example API
+  version: "1.0"
+paths:
+  /device:
+    get:
+      consumes:
+      - application/json
+      description: 根据设备ID获取单个设备的详细信息
+      parameters:
+      - description: 设备ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 设备信息
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 设备未找到
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 根据ID获取设备信息
+      tags:
+      - 设备管理
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新的设备记录
+      parameters:
+      - description: 创建设备请求
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建成功响应
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器内部错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 创建新设备
+      tags:
+      - 设备管理
+  /device/status:
+    put:
+      consumes:
+      - application/json
+      description: 根据设备ID更新设备状态
+      parameters:
+      - description: 设备状态更新请求
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties:
+            type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功响应
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 设备未找到
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器内部错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 更新设备状态
+      tags:
+      - 设备管理
+  /devices:
+    get:
+      consumes:
+      - application/json
+      description: 获取系统中所有设备的信息列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 设备列表
+          schema:
+            items:
+              $ref: '#/definitions/models.Device'
+            type: array
+        "500":
+          description: 内部服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 获取所有设备列表
+      tags:
+      - 设备管理
+  /devices/pagination:
+    get:
+      consumes:
+      - application/json
+      description: 根据条件对设备进行分页查询
+      parameters:
+      - description: 设备名称(模糊查询)
+        in: query
+        name: name
+        type: string
+      - description: 设备位置(模糊查询)
+        in: query
+        name: position
+        type: string
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 分页查询结果
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 设备分页查询
+      tags:
+      - 设备管理
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: 测试API接口，返回用户列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户列表
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: 测试API
+      tags:
+      - 测试接口
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+  BasicAuth:
+    type: basic
+  OAuth2AccessCode:
+    authorizationUrl: https://example.com/oauth/authorize
+    flow: accessCode
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+  OAuth2Application:
+    flow: application
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      write: ' Grants write access'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+  OAuth2Implicit:
+    authorizationUrl: https://example.com/oauth/authorize
+    flow: implicit
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      write: ' Grants write access'
+    type: oauth2
+  OAuth2Password:
+    flow: password
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      read: ' Grants read access'
+      write: ' Grants write access'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+swagger: "2.0"
